@@ -1,9 +1,10 @@
 from django.db import models
 
-class Schedule(models.Model):
+class PostSchedule(models.Model):
     post_id = models.AutoField(primary_key=True)
     user_id = models.IntegerField()
     nickname = models.CharField(max_length=45)
+    post_name = models.CharField(max_length=60)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     place = models.CharField(max_length=45, blank=True, null=True)
@@ -11,7 +12,7 @@ class Schedule(models.Model):
     memo = models.TextField(blank=True, null=True)
     alarm = models.IntegerField(blank=True, null=True)
     alarm_time = models.DateTimeField(blank=True, null=True)
-    color = models.CharField(max_length=45)
+    color = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         managed = False
