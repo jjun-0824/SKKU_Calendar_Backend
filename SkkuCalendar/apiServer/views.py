@@ -11,6 +11,7 @@ from django.http.response import JsonResponse
 
 # month
 class MainView(APIView):
+    # 글 작성 시
     def post(self,request):
         post_serializer = ScheduleSerializer(data=request.data)
         
@@ -19,7 +20,9 @@ class MainView(APIView):
             return Response(post_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def get(self,request,month):
+        if (month!=0):
             start = datetime.date(2022, month, 1)
             if (month <12) :
                 end = datetime.date(2022, month+1 , 1)
@@ -35,9 +38,13 @@ class MainView(APIView):
             )
             monthSchedule_serializer = ScheduleSerializer(monthSchedule,many=True)
             return Response(monthSchedule_serializer.data, status="200")
-        
+        # 전체데이터는 0을 기준으로 불러온다.
+        else:
+            monthSchedule = PostSchedule.objects.all()
+            monthSchedule_serializer = ScheduleSerializer(monthSchedule,many=True)
+            return Response(monthSchedule_serializer.data, status="200")
 
-        
+
     
 class PutView(APIView):       
     def put(self, request,id):
