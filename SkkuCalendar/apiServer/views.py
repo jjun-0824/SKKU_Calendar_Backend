@@ -11,6 +11,14 @@ from django.http.response import JsonResponse
 
 # month
 class MainView(APIView):
+    def post(self,request):
+        post_serializer = ScheduleSerializer(data=request.data)
+        
+        if post_serializer.is_valid():
+            post_serializer.save()
+            return Response(post_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def get(self,request,month):
             start = datetime.date(2022, month, 1)
             if (month <12) :
@@ -28,14 +36,7 @@ class MainView(APIView):
             monthSchedule_serializer = ScheduleSerializer(monthSchedule,many=True)
             return Response(monthSchedule_serializer.data, status="200")
         
-    def post(self,request):
-        post_serializer = ScheduleSerializer(data=request.data)
-        
-        if post_serializer.is_valid():
-            post_serializer.save()
-            return Response(post_serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         
     
 class PutView(APIView):       
@@ -44,7 +45,7 @@ class PutView(APIView):
             update_post = PostSchedule.objects.get(post_id=id) 
         except PostSchedule.DoesNotExist: 
             return JsonResponse({'message': 'The post does  not exist'}, status=status.HTTP_404_NOT_FOUND) 
- 
+
         update_serializer = ScheduleSerializer(update_post,data=request.data)    
         
         if update_serializer.is_valid(): 
